@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using VertexEMSBackend.DTOs.EmployeeDTOs;
 using VertexEMSBackend.Interfaces;
 using VertexEMSBackend.Models;
@@ -12,10 +13,12 @@ namespace VertexEMSBackend.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
+        private readonly UserManager<Employee> _userManager;
         private readonly IEmployeeService _employeeService;
 
-        public EmployeeController(IEmployeeService employeeService) 
+        public EmployeeController(IEmployeeService employeeService, UserManager<Employee> userManager) 
         { 
+            _userManager = userManager;
             _employeeService = employeeService;
 
         }
@@ -39,9 +42,9 @@ namespace VertexEMSBackend.Controllers
         [HttpGet("get-employee")]
         public async Task<IActionResult> GetEmployeeById(string id)
         {
-            var employee = await _employeeService.GetById(id);
+            var employee = await _userManager.FindByIdAsync(id);
 
-            if (employee != null)
+            if (employee !=null)
             {
                 return Ok(employee);
             }
@@ -55,11 +58,17 @@ namespace VertexEMSBackend.Controllers
         [HttpPost("add-employee")]        
         public async Task<IActionResult> AddEmployee(AddEmployeeDTO data)
         {
+            var userExists = await _userManager.FindByEmailAsync(data.Email);
+            if (userExists!=null) 
+            {
+                return BadRequest("User Already Exists");
+            }
+
             if (await _employeeService.AddEmployee(data))
             {
-                return Ok("Successfully Added.");
+                return Ok("User Successfully Added.");
             }
-            return BadRequest("Something went wrong.");
+            return BadRequest("Failed to Add User");
         }
 
         // PUT api/<EmployeeController>/5

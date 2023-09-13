@@ -31,6 +31,7 @@ namespace VertexEMSBackend.Services
             {
                 return "Invalid User Details!!";
             }
+
             var result = await _userManager.CheckPasswordAsync(Employee, data.Password);
 
             if (!result)

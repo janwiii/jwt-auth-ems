@@ -17,10 +17,10 @@ namespace VertexEMSBackend.Controllers
             _authService = authService;
         }
 
-        /*[HttpPost("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDTO data)
         {
-            
-        }*/
+
+        }
     }
 }

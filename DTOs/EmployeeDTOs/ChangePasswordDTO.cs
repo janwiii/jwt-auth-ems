@@ -4,10 +4,10 @@ namespace VertexEMSBackend.DTOs.EmployeeDTOs
 {
     public class ChangePasswordDTO
     {
-        [Required]
+        [Required(ErrorMessage ="Please enter the current password")]
         [DataType(DataType.Password)]
         public string? CurrentPassword { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Please enter the new password")]
         [DataType(DataType.Password)]
         public string? NewPassword { get; set; }
     }

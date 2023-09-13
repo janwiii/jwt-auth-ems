@@ -34,12 +34,9 @@ namespace VertexEMSBackend.Services
         public async Task<bool> GetById(string id)
         {
             var currentEmployee = await _userManager.FindByIdAsync(id);
-            if (currentEmployee == null)
-            {
-                return false;
-            } 
             var employee = await _dbContext.Employees.FindAsync(id);
-            if (employee == null)
+
+            if (employee == null || currentEmployee == null)
             {
                 return false;
             }
@@ -48,22 +45,25 @@ namespace VertexEMSBackend.Services
 
         public async Task<bool> AddEmployee(AddEmployeeDTO data)
         {
+            
             var iemployee = new Employee()
             {
                 EmployeeId = data.EmployeeId,
                 FirstName = data.FirstName,
                 LastName = data.LastName,
                 Email = data.Email,
+                UserName = data.Email,
                 Address = data.Address,
                 Position = data.Position,
-                PhoneNumber = data.PhoneNumber                
+                PhoneNumber = data.PhoneNumber,
+                EmployementStatus = data.EmployementStatus
             };
-            await _userManager.AddPasswordAsync(iemployee, data.Password);
-
-            _dbContext.Employees.Add(iemployee);
-
-            await _dbContext.SaveChangesAsync();
-            return true;
+            var result = await _userManager.CreateAsync(iemployee, data.Password);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;   
         }
         public async Task<bool> UpdateEmployee(string id, UpdateEmployeeDTO data)
         {
@@ -75,6 +75,7 @@ namespace VertexEMSBackend.Services
             employee.Address = data.Address;
             employee.Email = data.Email;
             employee.PhoneNumber = data.PhoneNumber;
+
 
             _dbContext.Employees.Update(employee);
 

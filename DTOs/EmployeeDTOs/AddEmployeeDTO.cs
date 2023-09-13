@@ -4,7 +4,6 @@ namespace VertexEMSBackend.DTOs.EmployeeDTOs
 {
     public class AddEmployeeDTO
     {
-        public Guid Id { get; set; }
         public string EmployeeId { get; set; }
         public string? FirstName { get; set;}
         public string? LastName { get; set;}
