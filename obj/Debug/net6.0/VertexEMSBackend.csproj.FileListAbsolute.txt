@@ -79,6 +79,7 @@ Z:\DotnetProjects\New folder\bin\Debug\net6.0\VertexEMSBackend.deps.json
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\VertexEMSBackend.runtimeconfig.json
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\VertexEMSBackend.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\VertexEMSBackend.pdb
+Z:\DotnetProjects\New folder\bin\Debug\net6.0\CloudinaryDotNet.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Humanizer.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -102,6 +103,7 @@ Z:\DotnetProjects\New folder\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Microsoft.OpenApi.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+Z:\DotnetProjects\New folder\bin\Debug\net6.0\Newtonsoft.Json.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 Z:\DotnetProjects\New folder\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll

@@ -90,5 +90,15 @@ namespace VertexEMSBackend.Services
             }
             return false;
         }
+        public async Task<bool> ForgotPassword(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null) 
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+               
+            }
+            return false;
+        }
     }
 }

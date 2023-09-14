@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VertexEMSBackend.Context;
@@ -10,13 +12,17 @@ namespace VertexEMSBackend.Services
 {
     public class EmployeeService : IEmployeeService
     {
+        private Account _account;
         private readonly ApplicationDbContext _dbContext;
+        private Cloudinary _cloudinary;
         private readonly UserManager<Employee> _userManager;
 
         public EmployeeService(ApplicationDbContext dbContext, UserManager<Employee> userManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _account = new Account { Cloud = "dnow8alub", ApiKey = "719549538397893", ApiSecret = "d793a2e110af388f063b53b117e555" };
+            _cloudinary = new Cloudinary(_account);
         }
         public async Task<List<Employee>?> GetAll()
         {
@@ -83,5 +89,41 @@ namespace VertexEMSBackend.Services
 
             return true;
         }
+
+        public async Task<bool> UploadEmployeeImage(Guid Id, IFormFile file)
+        {
+            
+            var employee = await _dbContext.Employees.FindAsync(Id);
+            if (employee == null)
+            {
+                return false;
+            }
+            var stream = new MemoryStream();
+            await file.CopyToAsync(stream);
+            stream.Position = 0;
+            var imageId = Guid.NewGuid();
+
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(file.FileName, stream),
+                PublicId = $"Employees/{imageId}",
+                Transformation = new Transformation().FetchFormat("auto")
+            };
+
+            _cloudinary.Upload(uploadParams);
+
+            var newProfilePicture = new ProfilePicture
+            {
+                ImageId = Guid.NewGuid(),
+                ProfileIMG = imageId,
+                Id = Id
+            };
+
+            _dbContext.ProfilePictures.Add(newProfilePicture);
+            _dbContext.SaveChanges();
+            return true;
+        }
+
+       
     }
 }

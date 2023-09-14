@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using VertexEMSBackend.Context;
 using VertexEMSBackend.DTOs.EmployeeDTOs;
 using VertexEMSBackend.Interfaces;
 using VertexEMSBackend.Models;
@@ -13,13 +17,20 @@ namespace VertexEMSBackend.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
+        private Account _account;
+        private Cloudinary _cloudinary;
         private readonly UserManager<Employee> _userManager;
         private readonly IEmployeeService _employeeService;
+        
+        private readonly ApplicationDbContext _dbContext;
 
-        public EmployeeController(IEmployeeService employeeService, UserManager<Employee> userManager) 
+        public EmployeeController(IEmployeeService employeeService, UserManager<Employee> userManager, ApplicationDbContext dbContext) 
         { 
             _userManager = userManager;
             _employeeService = employeeService;
+            _account = new Account { Cloud = "dnow8alub", ApiKey = "719549538397893", ApiSecret = "d793a2e110af388f063b53b117e555" };
+            _cloudinary =new Cloudinary(_account) ;
+            _dbContext = dbContext;
 
         }
         // GET: api/<EmployeeController>
@@ -82,6 +93,50 @@ namespace VertexEMSBackend.Controllers
             return BadRequest("Something went wrong.");
         }
 
-       
+        [HttpPost("upload-employee-image")]
+        public async Task<IActionResult> UploadEmployeeImage(Guid Id, IFormFile file)
+        {
+            if (file == null)
+            {
+                throw new Exception("Profile Image not found");
+            }
+            if(file.ContentType!= "image/png" && file.ContentType != "image/jpeg")
+            {
+                return BadRequest("Invalid file type");
+            }
+            if(await _employeeService.UploadEmployeeImage(Id, file))
+            {
+                return Ok("Image successfully added");
+            }
+            return BadRequest("Something went wrong");
+        }
+
+        [HttpGet("view-employee-profile")]
+        public async Task<IActionResult> ViewEmployeeImage(Guid Id, IFormFile file)
+        {
+            if (file == null)
+            {
+                throw new Exception("Employee Image Not found");
+            }
+            var employee = await _dbContext.Employees.FindAsync(Id);
+
+            if (employee == null)
+            {
+                throw new Exception("Vehicle not found");
+            }
+
+            var employeeImage = await _dbContext.ProfilePictures.FirstOrDefaultAsync(pp => pp.Id== Id);
+
+            if (employeeImage == null)
+            {
+                throw new Exception("Vehicle Image not found");
+            }
+
+            var vehicleImageURL = _cloudinary.Api.UrlImgUp.Secure().BuildUrl($"Employees/{employeeImage.ProfileIMG}.png");
+            return Redirect(vehicleImageURL);
+        }
+
+
+
     }
 }

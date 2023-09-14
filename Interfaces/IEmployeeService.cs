@@ -10,5 +10,8 @@ namespace VertexEMSBackend.Interfaces
         Task<bool> GetById(string id);
         Task<bool> AddEmployee(AddEmployeeDTO data);
         Task<bool> UpdateEmployee(string id, UpdateEmployeeDTO data);
+
+        Task<bool> UploadEmployeeImage(Guid id, IFormFile file);
+    
     }
 }
