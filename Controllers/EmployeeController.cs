@@ -84,9 +84,9 @@ namespace VertexEMSBackend.Controllers
 
         // PUT api/<EmployeeController>/5
         [HttpPut("update-employee")]
-        public async Task<IActionResult> UpdateEmployee(string employeeId, UpdateEmployeeDTO data)
+        public async Task<IActionResult> UpdateEmployee(string Id, UpdateEmployeeDTO data)
         {
-            if (await _employeeService.UpdateEmployee(employeeId, data))
+            if (await _employeeService.UpdateEmployee(Id, data))
             {
                 return Ok("Successfully updated.");
             }
@@ -94,7 +94,7 @@ namespace VertexEMSBackend.Controllers
         }
 
         [HttpPost("upload-employee-image")]
-        public async Task<IActionResult> UploadEmployeeImage(Guid Id, IFormFile file)
+        public async Task<IActionResult> UploadEmployeeImage(string Id, IFormFile file)
         {
             if (file == null)
             {
@@ -111,32 +111,6 @@ namespace VertexEMSBackend.Controllers
             return BadRequest("Something went wrong");
         }
 
-        [HttpGet("view-employee-profile")]
-        public async Task<IActionResult> ViewEmployeeImage(Guid Id, IFormFile file)
-        {
-            if (file == null)
-            {
-                throw new Exception("Employee Image Not found");
-            }
-            var employee = await _dbContext.Employees.FindAsync(Id);
-
-            if (employee == null)
-            {
-                throw new Exception("Vehicle not found");
-            }
-
-            var employeeImage = await _dbContext.ProfilePictures.FirstOrDefaultAsync(pp => pp.Id== Id);
-
-            if (employeeImage == null)
-            {
-                throw new Exception("Vehicle Image not found");
-            }
-
-            var vehicleImageURL = _cloudinary.Api.UrlImgUp.Secure().BuildUrl($"Employees/{employeeImage.ProfileIMG}.png");
-            return Redirect(vehicleImageURL);
-        }
-
-
-
+       
     }
 }

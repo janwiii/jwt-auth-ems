@@ -13,6 +13,5 @@ namespace VertexEMSBackend.Context
         }
 
         public DbSet<Employee> Employees { get; set; } 
-        public DbSet<ProfilePicture> ProfilePictures { get; set; }
     }
 }

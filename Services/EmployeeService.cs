@@ -3,6 +3,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using VertexEMSBackend.Context;
 using VertexEMSBackend.DTOs.EmployeeDTOs;
 using VertexEMSBackend.Interfaces;
@@ -54,7 +55,8 @@ namespace VertexEMSBackend.Services
             
             var iemployee = new Employee()
             {
-                EmployeeId = data.EmployeeId,
+                Id= Guid.NewGuid().ToString(),
+                EmployeeNo = data.EmployeeNo,
                 FirstName = data.FirstName,
                 LastName = data.LastName,
                 Email = data.Email,
@@ -85,15 +87,15 @@ namespace VertexEMSBackend.Services
 
             _dbContext.Employees.Update(employee);
 
-            var result = await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
-        public async Task<bool> UploadEmployeeImage(Guid Id, IFormFile file)
+        public async Task<bool> UploadEmployeeImage(string employeeId, IFormFile file)
         {
             
-            var employee = await _dbContext.Employees.FindAsync(Id);
+            var employee = await _dbContext.Employees.FindAsync(employeeId);
             if (employee == null)
             {
                 return false;
@@ -110,20 +112,15 @@ namespace VertexEMSBackend.Services
                 Transformation = new Transformation().FetchFormat("auto")
             };
 
-            _cloudinary.Upload(uploadParams);
-
-            var newProfilePicture = new ProfilePicture
+            var uploadStatus = await _cloudinary.UploadAsync(uploadParams);
+            if(uploadStatus.StatusCode == HttpStatusCode.OK)
             {
-                ImageId = Guid.NewGuid(),
-                ProfileIMG = imageId,
-                Id = Id
-            };
-
-            _dbContext.ProfilePictures.Add(newProfilePicture);
-            _dbContext.SaveChanges();
-            return true;
+                employee.ProfileIMG = imageId;
+                _dbContext.Employees.Update(employee);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            return false;
         }
-
-       
     }
 }

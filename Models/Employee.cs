@@ -5,8 +5,10 @@ namespace VertexEMSBackend.Models
 {
     public class Employee : IdentityUser
     {
+        
+
         [Required(ErrorMessage ="Employee ID is required")]
-        public string EmployeeId { get; set; }
+        public string? EmployeeNo { get; set; }
         [Required(ErrorMessage = "First Name is required")]
         public string? FirstName { get; set;}
         [Required(ErrorMessage = "Last Name is required")]
@@ -17,5 +19,7 @@ namespace VertexEMSBackend.Models
         public string? Position { get; set;}
         [Required(ErrorMessage = "Employement Status is required")]
         public string? EmployementStatus { get; set;}
+
+        public Guid ProfileIMG { get; set; }
     }
 }

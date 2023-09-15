@@ -12,8 +12,8 @@ using VertexEMSBackend.Context;
 namespace VertexEMSBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230913192825_init")]
-    partial class init
+    [Migration("20230915023908_add-imageId-aspnetuser")]
+    partial class addimageIdaspnetuser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -228,27 +228,6 @@ namespace VertexEMSBackend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("VertexEMSBackend.Models.ProfilePicture", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EmployeeId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("ImageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProfileIMG")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("ProfilePictures");
-                });
-
             modelBuilder.Entity("VertexEMSBackend.Models.Employee", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -257,7 +236,7 @@ namespace VertexEMSBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeId")
+                    b.Property<string>("EmployeeNo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -276,6 +255,9 @@ namespace VertexEMSBackend.Migrations
                     b.Property<string>("Position")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProfileIMG")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasDiscriminator().HasValue("Employee");
                 });
@@ -329,15 +311,6 @@ namespace VertexEMSBackend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("VertexEMSBackend.Models.ProfilePicture", b =>
-                {
-                    b.HasOne("VertexEMSBackend.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId");
-
-                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }
